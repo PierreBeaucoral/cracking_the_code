@@ -2,185 +2,333 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Meta tags for social media banners, these should be filled in appropriately as they are your "business card" -->
-  <meta name="description" content="Development Finance AI">
-  <meta property="og:title" content="AI development finance research"/>
-  <meta property="og:description" content="Analyzing development projects is crucial for understanding donors’ aid strategies and for refining classification methods in development finance using advanced AI techniques."/>
-  <meta property="og:url" content="https://pierrebeaucoral.github.io/"/>
-  <!-- Path to banner image, optimal dimensions 1200x630 -->
-  <meta property="og:image" content="static/images/banner.webp" />
-  <meta property="og:image:width" content="1200"/>
-  <meta property="og:image:height" content="630"/>
-
-  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
-  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
-  <!-- Path to twitter banner image -->
-  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  
-  <meta name="keywords" content="AI, Development Finance, OECD">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Cracking the Code: Enhancing Development Finance Understanding with Artificial Intelligence</title>
-  <link rel="icon" type="image/x-icon" href="static/images/icon.png">
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <!-- Primary meta -->
+  <title>Cracking the Code — Measuring the Climate-Finance Reporting Gap with NLP | Pierre Beaucoral</title>
+  <meta name="description" content="An NLP pipeline (BERTopic + HDBSCAN) applied to 5M OECD CRS project narratives uncovers 406 hidden topics and reveals a $30–40B/year gap between declared and narrative-based climate finance. Published in Int'l Journal of Data Science and Analytics (2026).">
+  <meta name="author" content="Pierre Beaucoral">
+  <meta name="keywords" content="Development finance, Climate finance, OECD CRS, BERTopic, NLP, HDBSCAN, Rio markers, Paris Agreement, Aid transparency">
+  <link rel="canonical" href="https://pierrebeaucoral.github.io/project/crs-ml/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Pierre Beaucoral — CERDI">
+  <meta property="og:title" content="Cracking the Code: Measuring the Climate-Finance Reporting Gap with NLP">
+  <meta property="og:description" content="Using NLP on 5M OECD project narratives, this study finds climate-related aid is over-reported by $30–40B/year vs. donor self-declarations. Published in Int'l Journal of Data Science and Analytics (2026).">
+  <meta property="og:url" content="https://pierrebeaucoral.github.io/project/crs-ml/">
+  <meta property="og:image" content="https://pierrebeaucoral.github.io/project/crs-ml/static/images/banner.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Cracking the Code: the climate-finance reporting gap">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cracking the Code: the $30–40B Climate-Finance Reporting Gap">
+  <meta name="twitter:description" content="NLP on 5M OECD CRS project narratives reveals climate finance is over-reported by $30–40B/year. Int'l J. of Data Science and Analytics (2026).">
+  <meta name="twitter:image" content="https://pierrebeaucoral.github.io/project/crs-ml/static/images/banner.webp">
+  <meta name="twitter:image:alt" content="Cracking the Code — climate-finance reporting gap">
+
+  <!-- Scholarly meta (Google Scholar indexing) -->
+  <meta name="citation_title" content="Cracking the code: enhancing development finance understanding with artificial intelligence">
+  <meta name="citation_author" content="Beaucoral, Pierre">
+  <meta name="citation_publication_date" content="2026/04/19">
+  <meta name="citation_journal_title" content="International Journal of Data Science and Analytics">
+  <meta name="citation_volume" content="22">
+  <meta name="citation_firstpage" content="143">
+  <meta name="citation_doi" content="10.1007/s41060-026-01086-w">
+  <meta name="citation_pdf_url" content="https://link.springer.com/content/pdf/10.1007/s41060-026-01086-w.pdf">
+
+  <link rel="icon" type="image/png" href="static/images/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
   <link rel="stylesheet" href="static/css/bulma-slider.min.css">
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="static/css/index.css">
-  
-  <!-- Additional Fancy Styles -->
+
   <style>
-    /* Smooth scrolling */
-    html {
-      scroll-behavior: smooth;
+    :root {
+      --ink: #0f1b2d;
+      --ink-soft: #334155;
+      --paper: #ffffff;
+      --paper-soft: #f6f7f9;
+      --line: #e5e8ec;
+      --brand: #0b3d91;
+      --brand-dark: #072765;
+      --accent: #c0392b;
+      --accent-soft: #fdecea;
+      --ok: #1e7b42;
     }
-    /* Fixed navbar with gradient background and hover effects */
-    .fancy-navbar {
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--ink);
+      background: var(--paper);
     }
-    .navbar-item:hover {
-      background-color: rgba(255,255,255,0.2);
-      transition: background-color 0.3s ease;
+    .serif { font-family: 'Source Serif Pro', Georgia, serif; }
+    h1, h2, h3, h4, .title { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; }
+    .navbar.fancy-navbar {
+      background: var(--ink);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
     }
-    /* Enhanced Hero Section with Banner Image */
-.hero {
-  background: 
-    url('static/images/banner.webp') no-repeat center center,
-    linear-gradient(135deg, rgba(255,126,95,0.8), rgba(254,180,123,0.8));
-  background-size: cover, cover;
-  background-blend-mode: overlay;
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-    .hero .title {
-      animation: fadeInDown 1s ease-out;
+    .fancy-navbar .navbar-item,
+    .fancy-navbar .navbar-item strong { color: #fff; }
+    .fancy-navbar .navbar-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .hero.is-publication {
+      background:
+        linear-gradient(180deg, rgba(11,61,145,0.92), rgba(7,39,101,0.96)),
+        url('static/images/banner.webp') center/cover no-repeat;
+      color: #fff;
     }
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .hero.is-publication .publication-title {
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
     }
-    /* Fade-in animation for sections */
-    .section {
-      animation: fadeInUp 1s ease-out;
-      margin-top: 2rem;
+    .hero.is-publication .subtitle-muted { color: #cfd8e8; }
+    .badges { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 0.75rem 0 1.25rem; }
+    .badges img { height: 22px; }
+    .publication-links { display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; }
+    .publication-links .button {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid transparent;
+      font-weight: 600;
     }
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .publication-links .button:hover { background: #e9efff; color: var(--brand-dark); }
+    .publication-links .button.is-primary {
+      background: var(--accent);
+      color: #fff;
     }
-    /* Back to top button */
-    #back-to-top {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #ff7e5f;
+    .publication-links .button.is-primary:hover { background: #962618; color: #fff; }
+    section.section { padding: 3rem 1.5rem; }
+    .key-findings {
+      background: var(--paper-soft);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .kf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) { .kf-grid { grid-template-columns: 1fr; } }
+    .kf-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1.5rem 1.25rem;
+      box-shadow: 0 1px 2px rgba(15,27,45,0.04);
+    }
+    .kf-card .kf-num {
+      font-family: 'Source Serif Pro', Georgia, serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+    }
+    .kf-card .kf-label {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+    }
+    .kf-card .kf-sub { color: var(--ink-soft); font-size: 0.92rem; }
+    .callout {
+      border-left: 4px solid var(--brand);
+      background: #f2f6ff;
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      margin: 1.25rem 0;
+    }
+    .callout.is-warning { border-left-color: var(--accent); background: var(--accent-soft); }
+    .policy-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1.25rem;
+      height: 100%;
+    }
+    .policy-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--brand-dark);
+    }
+    .cite-box {
+      background: var(--paper-soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+    .cite-box pre {
+      background: transparent;
+      padding: 0;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      color: var(--ink);
+    }
+    .copy-btn {
+      background: var(--ink);
       color: #fff;
       border: none;
-      padding: 10px 15px;
-      border-radius: 50%;
-      display: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
       cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .copy-btn:hover { background: var(--brand-dark); }
+    .iframe-wrap {
+      position: relative;
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .iframe-wrap iframe {
+      width: 100%;
+      height: min(70vh, 620px);
+      border: 0;
+      display: block;
+    }
+    .iframe-wrap .open-full {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(15,27,45,0.85);
+      color: #fff;
+      font-size: 0.75rem;
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+    }
+    .iframe-caption { text-align: center; color: var(--ink-soft); margin-top: 0.5rem; font-size: 0.9rem; }
+    #back-to-top {
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--ink); color: #fff;
+      border: none; padding: 10px 14px;
+      border-radius: 50%;
+      display: none; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       z-index: 1000;
     }
+    .footer { background: var(--paper-soft); border-top: 1px solid var(--line); padding: 2rem 1.5rem; }
+    .footer a { color: var(--brand); }
+    .section .title { color: var(--ink); }
+    .section p, .section li { color: var(--ink-soft); line-height: 1.7; }
+    .share-row a {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 0.8rem; margin-right: 0.4rem;
+      border: 1px solid var(--line); border-radius: 20px;
+      font-size: 0.85rem; color: var(--ink); text-decoration: none;
+    }
+    .share-row a:hover { background: var(--paper-soft); }
+    .tag-journal {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.75rem;
+    }
   </style>
-  
-  <!-- jQuery is already included -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script src="static/js/bulma-carousel.min.js"></script>
-  <script src="static/js/bulma-slider.min.js"></script>
-  <script src="static/js/index.js"></script>
 </head>
 <body>
-  <!-- Fixed Fancy Navigation Bar -->
+
   <nav class="navbar fancy-navbar is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="#">
-        <strong>Development Finance AI</strong>
-      </a>
+      <a class="navbar-item" href="#"><strong>Cracking the Code</strong></a>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
       </a>
     </div>
     <div id="navMenu" class="navbar-menu">
       <div class="navbar-end">
+        <a class="navbar-item" href="#findings">Findings</a>
         <a class="navbar-item" href="#abstract">Abstract</a>
-        <a class="navbar-item" href="#introduction">Introduction</a>
-        <a class="navbar-item" href="#related-work">Related Work</a>
-        <a class="navbar-item" href="#methodology">Methodology</a>
-        <a class="navbar-item" href="#results">Results</a>
-        <a class="navbar-item" href="#discussion">Discussion</a>
-        <a class="navbar-item" href="#BibTeX">BibTeX</a>
+        <a class="navbar-item" href="#method">Method</a>
+        <a class="navbar-item" href="#explore">Explore</a>
+        <a class="navbar-item" href="#policy">Policy</a>
+        <a class="navbar-item" href="#data">Code</a>
+        <a class="navbar-item" href="#cite">Cite</a>
+        <a class="navbar-item" href="#contact">Contact</a>
       </div>
     </div>
   </nav>
-  
-  <!-- Spacer for fixed navbar -->
-  <div style="height: 80px;"></div>
 
+  <div style="height: 56px;"></div>
+
+  <!-- HERO -->
   <header>
-    <section class="hero">
+    <section class="hero is-publication">
       <div class="hero-body">
-        <div class="container is-max-desktop">
-          <div class="columns is-centered">
-            <div class="column has-text-centered">
-              <h1 class="title is-1 publication-title">Cracking the Code: Enhancing Development Finance Understanding with Artificial Intelligence</h1>
-              <div class="is-size-5 publication-authors">
-                <span class="author-block">
-                  <a href="https://pierrebeaucoral.github.io/" target="_blank">Pierre Beaucoral</a><sup>*</sup>,
-                </span>
-              </div>
-              <div class="is-size-5 publication-authors">
-                <span class="author-block">UCA CNRS IRD CERDI<br>pierre.beaucoral@uca.fr</span>
-                <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
-              </div>
-              <div class="publication-links">
-                <span class="link-block">
-                  <a href="https://arxiv.org/pdf/2502.09495.pdf" target="_blank" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                    <span>Paper</span>
-                  </a>
-                </span>
-                <span class="link-block">
-                  <a href="static/pdfs/supplementary_material.pdf" target="_blank" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                    <span>Supplementary</span>
-                  </a>
-                </span>
-                <span class="link-block">
-                  <a href="https://github.com/PierreBeaucoral/ML-clustering-of-development-activities" target="_blank" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fab fa-github"></i></span>
-                    <span>Code</span>
-                  </a>
-                </span>
-                <span class="link-block">
-                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="ai ai-arxiv"></i></span>
-                    <span>arXiv</span>
-                  </a>
-                </span>
-              </div>
-            </div>
+        <div class="container is-max-desktop has-text-centered">
+          <span class="tag-journal">Int'l Journal of Data Science and Analytics · 2026 · 22:143</span>
+          <h1 class="title is-2 publication-title">
+            Cracking the Code: Enhancing Development Finance Understanding with Artificial Intelligence
+          </h1>
+          <p class="subtitle-muted serif is-size-5" style="margin-top:0.75rem;">
+            An NLP pipeline on 5 million OECD CRS project narratives reveals a
+            <strong style="color:#ffb4a6;">$30–40B/year gap</strong>
+            between declared and narrative-based climate finance.
+          </p>
+
+          <div class="is-size-6 publication-authors" style="margin-top:1rem;">
+            <span class="author-block">
+              <a href="https://pierrebeaucoral.github.io/" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;">Pierre Beaucoral</a>
+            </span>
+          </div>
+          <div class="is-size-7 subtitle-muted" style="margin-top:0.25rem;">
+            CERDI — Université Clermont Auvergne, CNRS, IRD · <a href="mailto:pierre.beaucoral@uca.fr" style="color:#fff;">pierre.beaucoral@uca.fr</a>
+          </div>
+
+          <div class="badges" style="margin-top:1.25rem;">
+            <img src="https://img.shields.io/badge/DOI-10.1007%2Fs41060--026--01086--w-0b3d91?style=flat-square" alt="DOI badge">
+            <img src="https://img.shields.io/badge/Journal-IJDSA%20Springer-004b87?style=flat-square" alt="Journal badge">
+            <img src="https://img.shields.io/badge/Open%20Access-Yes-1e7b42?style=flat-square" alt="Open Access">
+            <img src="https://img.shields.io/badge/Replication-GitHub-24292e?style=flat-square&logo=github" alt="Replication on GitHub">
+          </div>
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="https://doi.org/10.1007/s41060-026-01086-w" target="_blank" rel="noopener" class="button is-primary is-rounded">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                <span>Read the paper (open access)</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/PierreBeaucoral/ML-clustering-of-development-activities" target="_blank" rel="noopener" class="button is-rounded">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code &amp; replication</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://arxiv.org/abs/2502.09495" target="_blank" rel="noopener" class="button is-rounded">
+                <span class="icon"><i class="ai ai-arxiv"></i></span>
+                <span>Preprint (arXiv)</span>
+              </a>
+            </span>
+          </div>
+
+          <div class="share-row" style="margin-top:1.25rem;">
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fpierrebeaucoral.github.io%2Fproject%2Fcrs-ml%2F" target="_blank" rel="noopener" style="color:#fff;border-color:rgba(255,255,255,0.4);">
+              <i class="fab fa-linkedin"></i> Share on LinkedIn
+            </a>
+            <a href="https://twitter.com/intent/tweet?text=Cracking%20the%20Code%3A%20NLP%20reveals%20a%20%2430%E2%80%9340B%2Fyr%20gap%20in%20climate%20finance%20reporting.&url=https%3A%2F%2Fpierrebeaucoral.github.io%2Fproject%2Fcrs-ml%2F" target="_blank" rel="noopener" style="color:#fff;border-color:rgba(255,255,255,0.4);">
+              <i class="fab fa-x-twitter"></i> Post on X
+            </a>
+            <a href="https://bsky.app/intent/compose?text=Cracking%20the%20Code%3A%20NLP%20reveals%20a%20%2430%E2%80%9340B%2Fyr%20gap%20in%20climate%20finance%20reporting.%20https%3A%2F%2Fpierrebeaucoral.github.io%2Fproject%2Fcrs-ml%2F" target="_blank" rel="noopener" style="color:#fff;border-color:rgba(255,255,255,0.4);">
+              <i class="fas fa-cloud"></i> Bluesky
+            </a>
           </div>
         </div>
       </div>
@@ -188,215 +336,413 @@
   </header>
 
   <main>
-    <!-- Abstract Section -->
-    <section id="abstract" class="section hero is-light">
+
+    <!-- KEY FINDINGS STRIP -->
+    <section id="findings" class="key-findings section">
       <div class="container is-max-desktop">
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">Abstract</h2>
-            <div class="content has-text-justified">
-              <p>
-                This study leverages advanced AI techniques to analyze almost 5 million project narratives from the OECD CRS dataset. By combining BERT-based text embedding, HDBSCAN clustering, and automated labeling with Class-based TF-IDF and LLM fine-tuning, I uncover 406 hidden thematic clusters in development finance. Our results reveal discrepancies in traditional classifications and offer a refined lens on donor priorities and aid effectiveness.
-              </p>
-            </div>
+        <h2 class="title is-4 has-text-centered" style="margin-bottom:2rem;">At a glance</h2>
+        <div class="kf-grid">
+          <div class="kf-card">
+            <div class="kf-num">$30–40B / yr</div>
+            <div class="kf-label">Climate-finance reporting gap</div>
+            <div class="kf-sub">Between donor self-declarations (Rio markers) and narrative-based classification, 2010–2022.</div>
+          </div>
+          <div class="kf-card">
+            <div class="kf-num">406 topics</div>
+            <div class="kf-label">Hidden thematic clusters</div>
+            <div class="kf-sub">Recovered from 5M OECD CRS project narratives (1973–2022) — vs. 234 official purpose codes.</div>
+          </div>
+          <div class="kf-card">
+            <div class="kf-num">48%</div>
+            <div class="kf-label">Projects that don't fit cleanly</div>
+            <div class="kf-sub">Share of outlier projects that the sector-code system cannot cluster coherently.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Introduction Section -->
-    <section id="introduction" class="section">
+    <!-- ABSTRACT -->
+    <section id="abstract" class="section">
       <div class="container is-max-desktop">
-        <h2 class="title">Introduction</h2>
-        <div class="content">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content serif">
           <p>
-            In an era of data-driven decision-making, understanding the intricacies of development finance is critical. This research addresses key questions such as: <em>How can machine learning improve the classification of development projects?</em> and <em>What hidden themes exist beyond traditional OECD classifications?</em> The objective of this research is to propose an AI-driven framework that enhances the transparency and precision of public and private aid analysis.
+            Official climate-finance reporting depends on donors self-declaring which of their projects count
+            as "climate" via the Rio markers — a binary flag known to be prone to over-reporting. Testing
+            this at scale has been hard: the OECD Creditor Reporting System (CRS) contains ~5 million project
+            descriptions spanning 50 years and dozens of languages.
+          </p>
+          <p>
+            This study applies a modern NLP pipeline — multilingual sentence-BERT embeddings, UMAP
+            dimensionality reduction, HDBSCAN clustering, and LLM-assisted labelling — to classify every
+            project from its narrative rather than from donor-declared tags. The method recovers
+            <strong>406 fine-grained thematic clusters</strong> and, once aggregated to climate-related topics,
+            produces an <strong>estimate of climate finance that is $30–40B/year lower</strong> than the
+            Rio-marker figures implied. The gap is economically and politically significant: it is roughly
+            one-third of the $100B/year Paris Agreement commitment.
+          </p>
+          <p>
+            Beyond climate, the resulting dataset enables granular analyses that sector codes cannot
+            support — from great-ape conservation and LGBTQ rights to the dyadic structure of Syrian
+            humanitarian flows — and provides a reusable, multilingual framework for aid-transparency
+            research.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Related Work Section -->
-    <section id="related-work" class="section">
+    <!-- INTRODUCTION -->
+    <section id="introduction" class="section" style="background: var(--paper-soft);">
       <div class="container is-max-desktop">
-        <h2 class="title">Related Work</h2>
+        <h2 class="title is-3">Why this matters</h2>
         <div class="content">
           <p>
-            Previous studies have predominantly relied on self-declared project classifications and predefined sectors, which can obscure nuanced thematic distinctions. Recent advances in Natural Language Processing and Machine Learning now allow for a more granular examination. Our approach builds upon these developments, bridging existing gaps in the literature regarding aid effectiveness and donor-recipient dynamics. This research is based on the very seminal paper from Toetzke et al. (2022).
+            Every climate-COP reopens the same question: are rich-country pledges actually being delivered?
+            The honest answer is surprisingly hard to produce, because the accounting system we use —
+            OECD Rio markers — is a self-declaration regime. Donors decide which of their projects count
+            as climate-relevant, and those decisions are not independently verified.
           </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Methodology Section -->
-    <section id="methodology" class="section">
-      <div class="container is-max-desktop">
-        <h2 class="title">Methodology</h2>
-        <div class="content">
-          <h3>Data Collection & Preprocessing</h3>
           <p>
-            Over 5 million project descriptions were extracted from the OECD CRS dataset. Rigorous cleaning and quality control procedures were implemented to ensure reliable inputs for analysis.
+            A project narrative — what the aid agency <em>says the project does</em> — is a richer, harder-to-game
+            signal than a binary flag. This paper treats the narrative as the primary data, lets a clustering
+            algorithm discover the latent topic structure of global aid, and then compares the resulting
+            topic-based aggregates with the official ones. The divergence is the reporting gap.
           </p>
-          <h3>Text Embedding & Clustering</h3>
-          <p>
-            We utilized a BERT-based transformer model to convert narrative descriptions into dense vector representations. The HDBSCAN clustering algorithm then grouped these vectors into 406 distinct thematic clusters, providing a more detailed classification than traditional methods.
-          </p>
-          <h3>Automated Labeling</h3>
-          <p>
-            Clusters were automatically labeled using a combination of Class-based TF-IDF and fine-tuning with large language models, resulting in descriptive and interpretable thematic tags. I used the llm Zephyr-7Bβ, it	is	the	second	model	in	this	series,	and	it	is	a	fine-tuned	version	of	Mistral-7B-v0.1.
-          </p>
-          <h3>Interactive Visualization</h3>
-          <p>
-            Interactive outputs visualize clustering results and thematic distributions. These visualizations enable exploration of trends over time, donor-recipient relationships, and thematic overlaps across projects.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Video Carousel -->
-    <section class="hero is-small">
-      <div class="hero-body">
-        <div class="container">
-          <h2 class="title is-3">Interactive outputs</h2>
-          <div id="results-carousel" class="carousel results-carousel">
-            <div class="item item-video1">
-              <!-- Your video file here -->
-              <iframe src="topics_over_time_visualization.html" style="width:100%; height: 450px; border: 0px;"></iframe>
-              <h2 class="subtitle has-text-centered">Topic frequency through years.</h2>
-            </div>
-            <div class="item item-video2">
-              <!-- Your video file here -->
-              <iframe src="topics_per_donor_visualization.html" style="width:100%; height: 800px; border: 0px;"></iframe>
-              <h2 class="subtitle has-text-centered">Topic frequency per donor.</h2>
-            </div>
-            <div class="item item-video3">
-              <iframe src="commitmentyear_plot.html" style="width:100%; height: 800px; border: 0px;"></iframe>
-              <h2 class="subtitle has-text-centered">Commitments for topics through years.</h2>
-            </div>
+          <div class="callout">
+            <strong>Research questions.</strong>
+            <ol style="margin-top:0.4rem;">
+              <li>Can unsupervised topic modelling produce a more granular classification of development projects than sector codes or Rio markers?</li>
+              <li>How much does narrative-based climate-finance accounting diverge from Rio-marker-based accounting?</li>
+              <li>What hidden patterns, niches, and inconsistencies does the richer classification expose?</li>
+            </ol>
           </div>
         </div>
       </div>
     </section>
-    <!-- End Video Carousel -->
 
-    <!-- Results Section -->
-    <section id="results" class="section">
+    <!-- RELATED WORK -->
+    <section id="related" class="section">
       <div class="container is-max-desktop">
-        <h2 class="title">Results</h2>
+        <h2 class="title is-3">Related work</h2>
+        <div class="content">
+          <p>
+            The paper builds most directly on <a href="https://doi.org/10.1038/s41467-022-30616-w" target="_blank" rel="noopener">Toetzke, Banholzer &amp; Feuerriegel (2022, <em>Nature Communications</em>)</a>,
+            who used Doc2Vec + K-means on a subset of the CRS to recover ~180 activity clusters for climate
+            finance. I extend that work in three directions: (i) the <strong>full CRS</strong> (5M projects,
+            1973–2022) rather than a climate-only subset; (ii) a modern embedding stack
+            (<strong>multilingual MiniLM-L12-v2</strong> + <strong>UMAP</strong> + <strong>HDBSCAN</strong>)
+            that does not require specifying the number of clusters a priori; (iii) an
+            <strong>LLM-assisted labelling layer</strong> (Zephyr-7B-β on top of c-TF-IDF) for
+            human-readable topic names.
+          </p>
+          <p>
+            The climate-finance measurement literature has independently raised concerns about Rio-marker
+            reliability — see Weikmans &amp; Roberts (2019), Michaelowa &amp; Michaelowa (2011), and
+            Junghans &amp; Harmeling (2012) — but these critiques have mostly relied on sampled audits of
+            a few hundred projects. This study offers the first <strong>population-scale</strong>, fully
+            automated, reproducible cross-check. It also complements supervised approaches such as
+            <a href="https://doi.org/10.1038/s41597-023-02601-5" target="_blank" rel="noopener">ClimateFinanceBERT</a>
+            (Toetzke et al., 2023), which estimates climate finance via labelled training rather than
+            unsupervised discovery.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section id="method" class="section" style="background: var(--paper-soft);">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">Method</h2>
+        <div class="content">
+          <h3 class="title is-5">1. Data</h3>
+          <p>
+            OECD Creditor Reporting System, ~5 million project records, 1973–2022. The text input is the
+            concatenation of <em>project title</em>, <em>short description</em>, and <em>long description</em>.
+            Declarations are multilingual; no manual translation is performed.
+          </p>
+          <h3 class="title is-5">2. Embeddings</h3>
+          <p>
+            <code>paraphrase-multilingual-MiniLM-L12-v2</code> (sentence-transformers) maps each narrative to a
+            384-dimensional dense vector. Multilingual by design — English, French, German, Dutch, Spanish, etc.
+          </p>
+          <h3 class="title is-5">3. Dimensionality reduction</h3>
+          <p>
+            <strong>UMAP</strong> to 12 dimensions, preserving local and global structure while sidestepping
+            curse-of-dimensionality issues that degrade Euclidean-based clustering.
+          </p>
+          <h3 class="title is-5">4. Clustering</h3>
+          <p>
+            <strong>HDBSCAN</strong> (min. cluster size = 500) — density-based, hierarchical, optimal-k free,
+            tolerant of the noise/"generic project" problem. Outliers are explicitly identified rather than
+            force-assigned, then optionally re-absorbed via a second nearest-cluster pass.
+          </p>
+          <h3 class="title is-5">5. Labelling</h3>
+          <p>
+            Class-based TF-IDF (c-TF-IDF) extracts the most discriminative tokens per cluster; the top-10 tokens
+            and 5 representative narratives are passed to <strong>Zephyr-7B-β</strong> (fine-tuned Mistral-7B) to
+            generate human-readable cluster labels.
+          </p>
+          <h3 class="title is-5">6. Validation</h3>
+          <p>
+            Clustering quality tracked with Silhouette, Davies–Bouldin, and Calinski–Harabasz scores. Outlier
+            reduction trades coherence for coverage and is reported transparently.
+          </p>
+          <div class="callout is-warning">
+            <strong>Reproducibility.</strong> Full pipeline (Python), fixed seeds, and a step-by-step
+            README are available in the <a href="https://github.com/PierreBeaucoral/ML-clustering-of-development-activities" target="_blank" rel="noopener">replication repository</a>. The paper can be re-run end-to-end on a standard laptop with a GPU — no HPC cluster required.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE -->
+    <section id="explore" class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">Explore the data</h2>
+        <p style="margin-bottom:1rem;">Three live, interactive views of the 406-topic landscape. Hover, zoom, filter.</p>
+
+        <div id="explore-carousel" class="carousel results-carousel">
+          <div class="item">
+            <div class="iframe-wrap">
+              <iframe src="topics_over_time_visualization.html" title="Topic frequency through years"></iframe>
+              <a class="open-full" href="topics_over_time_visualization.html" target="_blank" rel="noopener">Open full-screen ↗</a>
+            </div>
+            <div class="iframe-caption">Topic frequency through years — the rise and fall of development fashions.</div>
+          </div>
+          <div class="item">
+            <div class="iframe-wrap">
+              <iframe src="topics_per_donor_visualization.html" title="Topic frequency per donor"></iframe>
+              <a class="open-full" href="topics_per_donor_visualization.html" target="_blank" rel="noopener">Open full-screen ↗</a>
+            </div>
+            <div class="iframe-caption">Topic mix per donor — whose portfolio is truly climate-heavy?</div>
+          </div>
+          <div class="item">
+            <div class="iframe-wrap">
+              <iframe src="commitmentyear_plot.html" title="Commitments per topic through years"></iframe>
+              <a class="open-full" href="commitmentyear_plot.html" target="_blank" rel="noopener">Open full-screen ↗</a>
+            </div>
+            <div class="iframe-caption">Commitments per topic over time — constant-USD.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="section" style="background: var(--paper-soft);">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">Headline results</h2>
         <div class="content">
           <ul>
-            <li><strong>Uncovering Hidden Themes:</strong> The identification of 406 distinct clusters reveals subtle thematic nuances that traditional classifications miss.</li>
-            <li><strong>Enhanced Transparency:</strong> Interactive visualizations provide a dynamic view of donor priorities and aid flows, supporting data-driven insights.</li>
-            <li><strong>Comparative Analysis:</strong> Our method highlights discrepancies between AI-based classifications and conventional OECD categorizations, offering a more nuanced analysis of project objectives.</li>
+            <li><strong>Climate-finance reporting gap: $30–40B/year.</strong> Aggregated narrative-based climate flows are systematically lower than Rio-marker totals throughout the 2010–2022 period. The gap widens post-Paris Agreement, consistent with over-labelling incentives after the $100B pledge.</li>
+            <li><strong>406 vs. 234.</strong> The narrative-based taxonomy recovers 1.7× more distinct topics than the OECD purpose-code system, with finer granularity in thematic areas (<em>e.g.</em> "Government &amp; Civil Society — general" breaks into ~30 sub-clusters).</li>
+            <li><strong>Fashion cycles.</strong> Topics such as microfinance, coffee-farmer support, and Amazon Indigenous conservation display clear rise-and-fall dynamics that binary sector tags cannot capture.</li>
+            <li><strong>Niche visibility.</strong> Small but policy-relevant flows — great-ape conservation, demining, LGBTQ rights, reproductive health — become individually trackable for the first time.</li>
           </ul>
-          <p>
-            The interactive visualizations below further illustrate trends over time and donor-specific patterns, substantiating the effectiveness of our AI-driven approach.
-          </p>
         </div>
-        <!-- Image Carousel for Visual Results -->
-        <section class="hero is-small">
-          <div class="hero-body">
-            <div class="container">
-              <div id="results-carousel" class="carousel results-carousel">
-                <div class="item">
-                  <img src="static/images/Figure_6.PNG" alt="Visualization of great apes conservation projects" />
-                  <h2 class="subtitle has-text-centered">Great Apes Conservation Projects</h2>
-                </div>
-                <div class="item">
-                  <img src="static/images/Figure_7.png" alt="Visualization of Syrian conflict projects" />
-                  <h2 class="subtitle has-text-centered">Syrian Conflict Projects</h2>
-                </div>
-                <div class="item">
-                  <img src="static/images/Figure_8.png" alt="Visualization of aid trends analysis" />
-                  <h2 class="subtitle has-text-centered">Aid Trends Analysis</h2>
-                </div>
-              </div>
+
+        <div id="image-carousel" class="carousel results-carousel" style="margin-top:2rem;">
+          <div class="item">
+            <img src="static/images/Figure_6.PNG" alt="Geographic distribution of great-apes conservation projects">
+            <h2 class="subtitle has-text-centered">Fig. 6 — Great-Apes conservation projects, by country.</h2>
+          </div>
+          <div class="item">
+            <img src="static/images/Figure_7.png" alt="Donor-recipient flows for Syrian humanitarian aid cluster">
+            <h2 class="subtitle has-text-centered">Fig. 7 — Syrian humanitarian-aid dyadic flows.</h2>
+          </div>
+          <div class="item">
+            <img src="static/images/Figure_8.png" alt="Topic trend analysis — aid fashions">
+            <h2 class="subtitle has-text-centered">Fig. 8 — Is aid a fashion victim? Topic share, 2010–2022.</h2>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POLICY -->
+    <section id="policy" class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">For policy readers</h2>
+        <div class="columns is-multiline">
+          <div class="column is-6">
+            <div class="policy-card">
+              <h4>OECD DAC &amp; statistical units</h4>
+              <p>Rio-marker figures should be cross-checked against narrative-based estimates before publication. A $30–40B/year divergence is not a rounding issue — it's a governance signal.</p>
             </div>
           </div>
-        </section>
+          <div class="column is-6">
+            <div class="policy-card">
+              <h4>Climate negotiators</h4>
+              <p>Paris-Agreement compliance assessments currently lean on self-reported numbers. An independent, narrative-based estimator puts a harder floor on the "delivered climate finance" claim.</p>
+            </div>
+          </div>
+          <div class="column is-6">
+            <div class="policy-card">
+              <h4>Multilateral &amp; bilateral donors</h4>
+              <p>The 406-topic map surfaces internal inconsistencies — identical project types classified differently across agencies. Useful for portfolio review and accountability reporting.</p>
+            </div>
+          </div>
+          <div class="column is-6">
+            <div class="policy-card">
+              <h4>NGOs, journalists, watchdogs</h4>
+              <p>The interactive explorer and open replication make it possible to audit a donor's climate claims, track a niche flow (e.g. demining, gender-based violence response), or investigate dyadic patterns without custom tooling.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Discussion & Conclusion Section -->
-    <section id="discussion" class="section">
+    <!-- LIMITATIONS -->
+    <section id="limits" class="section" style="background: var(--paper-soft);">
       <div class="container is-max-desktop">
-        <h2 class="title">Discussion & Conclusion</h2>
+        <h2 class="title is-3">What this paper does <em>not</em> claim</h2>
         <div class="content">
-          <p>
-            Our findings underscore the limitations of traditional classification methods in capturing the complexity of development finance. The AI-driven approach not only refines thematic categorization but also provides actionable insights for policymakers. While our results are promising, further work is needed to integrate additional data sources and validate the findings across varied contexts.
-          </p>
-          <p>
-            Future research directions include the incorporation of real-time data and expanding the analysis to encompass more dynamic elements of global aid distribution.
+          <ul>
+            <li><strong>Not a causal identification.</strong> The paper documents a measurement gap; it does not identify the causal mechanism (strategic over-labelling vs. reporting inertia vs. genuine ambiguity). That's the natural next paper.</li>
+            <li><strong>Narrative quality varies.</strong> Reporting habits differ across agencies and over time; the multilingual embedding absorbs much of this, but not all. Results are robust to outlier handling; see Sec. 4.3 of the paper.</li>
+            <li><strong>Lower bound.</strong> Because HDBSCAN sets some ambiguous projects aside as outliers, the climate-finance estimate is best read as a <em>lower bound</em>. The truth lies between my narrative-based figure and the Rio-marker figure.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CODE -->
+    <section id="data" class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">Replication code</h2>
+        <div class="content">
+          <div class="policy-card" style="max-width:640px;">
+            <h4><i class="fab fa-github"></i> Full pipeline on GitHub</h4>
+            <p>Python scripts, requirements file, and step-by-step README. Runs end-to-end on a standard laptop with a GPU — no cluster required.</p>
+            <a class="button is-dark is-small is-rounded" href="https://github.com/PierreBeaucoral/ML-clustering-of-development-activities" target="_blank" rel="noopener">Open repository ↗</a>
+          </div>
+          <p style="margin-top:1rem;font-size:0.9rem;color:var(--ink-soft);">
+            Issues, pull requests, and forks are welcome — especially translations of the labelling prompts
+            and extensions to non-OECD sources (World Bank, AIIB, AfDB).
           </p>
         </div>
       </div>
     </section>
 
-    <!-- BibTeX Citation Section -->
-    <section id="BibTeX" class="section">
-      <div class="container is-max-desktop content">
-        <h2 class="title">BibTeX</h2>
-        <pre><code>
-@misc{beaucoral2025crackingcodeenhancingdevelopment,
-  title={Cracking the Code: Enhancing Development Finance Understanding with Artificial Intelligence}, 
-  author={Pierre Beaucoral},
-  year={2025},
-  eprint={2502.09495},
-  archivePrefix={arXiv},
-  primaryClass={econ.GN},
-  url={https://arxiv.org/abs/2502.09495},
-}
-        </code></pre>
+    <!-- CITE -->
+    <section id="cite" class="section" style="background: var(--paper-soft);">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">How to cite</h2>
+        <div class="cite-box" style="margin-bottom:1rem;">
+          <p class="serif" style="margin-bottom:0.5rem;">
+            Beaucoral, P. (2026). Cracking the code: enhancing development finance understanding with
+            artificial intelligence. <em>International Journal of Data Science and Analytics</em>,
+            22, 143. <a href="https://doi.org/10.1007/s41060-026-01086-w" target="_blank" rel="noopener">https://doi.org/10.1007/s41060-026-01086-w</a>
+          </p>
+        </div>
+
+        <div class="cite-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <strong>BibTeX</strong>
+            <button class="copy-btn" id="copy-bibtex" type="button">Copy</button>
+          </div>
+<pre id="bibtex-block">@article{beaucoral2026cracking,
+  title   = {Cracking the code: enhancing development finance understanding with artificial intelligence},
+  author  = {Beaucoral, Pierre},
+  journal = {International Journal of Data Science and Analytics},
+  year    = {2026},
+  volume  = {22},
+  pages   = {143},
+  doi     = {10.1007/s41060-026-01086-w},
+  url     = {https://doi.org/10.1007/s41060-026-01086-w}
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3">Contact &amp; collaboration</h2>
+        <div class="content">
+          <p>
+            If you work on climate-finance accountability, ODA measurement, aid-transparency NLP, or
+            development-economics methodology — I'd like to hear from you. I'm a PhD candidate at
+            <strong>CERDI</strong> (Université Clermont Auvergne, CNRS, IRD) working on development and
+            environmental economics; this paper is part of a broader agenda on measuring public-policy
+            flows from text.
+          </p>
+          <p>
+            <i class="fas fa-envelope"></i> <a href="mailto:pierre.beaucoral@uca.fr">pierre.beaucoral@uca.fr</a><br>
+            <i class="fas fa-globe"></i> <a href="https://pierrebeaucoral.github.io/" target="_blank" rel="noopener">pierrebeaucoral.github.io</a><br>
+            <i class="fab fa-linkedin"></i> <a href="https://www.linkedin.com/in/pierre-beaucoral/" target="_blank" rel="noopener">LinkedIn</a> ·
+            <i class="fab fa-github"></i> <a href="https://github.com/PierreBeaucoral" target="_blank" rel="noopener">GitHub</a> ·
+            <i class="ai ai-google-scholar"></i> <a href="https://scholar.google.com/citations?user=&hl=en" target="_blank" rel="noopener">Google Scholar</a>
+          </p>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- Footer Section -->
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
-      <div class="columns is-centered">
+      <div class="columns">
         <div class="column is-8">
-          <div class="content">
-            <p>
-              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-              Please link back to this page if you use its source code. This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-            </p>
-          </div>
+          <p class="is-size-7" style="color:var(--ink-soft);">
+            © 2026 Pierre Beaucoral. Text and figures licensed
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+            Paper © The Author(s), under exclusive licence to Springer Nature Switzerland AG 2026.
+            This project page is adapted from the
+            <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>
+            (Nerfies lineage).
+          </p>
+        </div>
+        <div class="column is-4 has-text-right-desktop">
+          <p class="is-size-7" style="color:var(--ink-soft);">
+            Last updated April 2026 ·
+            <a href="https://github.com/PierreBeaucoral/cracking_the_code" target="_blank" rel="noopener">Source</a>
+          </p>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Back to Top Button -->
-  <button id="back-to-top" title="Back to top">
+  <button id="back-to-top" title="Back to top" aria-label="Back to top">
     <i class="fas fa-arrow-up"></i>
   </button>
 
-  <!-- JavaScript for Navbar Burger & Back-to-Top functionality -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Navbar burger toggle
       const burger = document.querySelector('.navbar-burger');
-      const menu = document.getElementById(burger.dataset.target);
-      burger.addEventListener('click', () => {
-        burger.classList.toggle('is-active');
-        menu.classList.toggle('is-active');
-      });
-      
-      // Show/hide back-to-top button on scroll
+      if (burger) {
+        const menu = document.getElementById(burger.dataset.target);
+        burger.addEventListener('click', () => {
+          burger.classList.toggle('is-active');
+          menu.classList.toggle('is-active');
+        });
+      }
+
       const backToTop = document.getElementById('back-to-top');
       window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-          backToTop.style.display = "block";
-        } else {
-          backToTop.style.display = "none";
-        }
+        backToTop.style.display = window.pageYOffset > 300 ? 'block' : 'none';
       });
-      
-      // Scroll back to top smoothly
-      backToTop.addEventListener('click', () => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      });
+      backToTop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+
+      const copyBtn = document.getElementById('copy-bibtex');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const txt = document.getElementById('bibtex-block').innerText;
+          navigator.clipboard.writeText(txt).then(() => {
+            copyBtn.textContent = 'Copied ✓';
+            setTimeout(() => (copyBtn.textContent = 'Copy'), 1800);
+          });
+        });
+      }
+
+      if (window.bulmaCarousel) {
+        bulmaCarousel.attach('#explore-carousel', { slidesToScroll: 1, slidesToShow: 1, loop: true });
+        bulmaCarousel.attach('#image-carousel',   { slidesToScroll: 1, slidesToShow: 1, loop: true });
+      }
     });
   </script>
 </body>
